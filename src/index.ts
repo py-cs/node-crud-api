@@ -1,27 +1,6 @@
 import { createServer, IncomingMessage } from "http";
 import { userController } from "./users/controller";
 
-const parseRequest = async (req: IncomingMessage) => {
-  return new Promise((res) => {
-    const { url, method } = req;
-    const body: Uint8Array[] = [];
-    let bodyStr;
-    req
-      .on("data", (chunk: Uint8Array) => {
-        body.push(chunk);
-      })
-      .on("end", () => {
-        bodyStr = Buffer.concat(body).toString();
-        res({ url, method, bodyStr });
-      });
-  });
-};
-
-const getId = (url: string) => {
-  const groups = url.match(/\/api\/users\/(\w+)/);
-  return groups ? groups[1] : null;
-};
-
 const server = createServer((req, res) => {
   const { url, method } = req;
   console.log(url, method);
@@ -31,7 +10,7 @@ const server = createServer((req, res) => {
   } else {
     switch (method) {
       case "GET":
-        if (url.match(/\/api\/users\/(\w+)/)) {
+        if (url.match(/\/api\/users\/([\w-]+)/)) {
           userController.getOne(req, res);
         } else {
           userController.getAll(req, res);

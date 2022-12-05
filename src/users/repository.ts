@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 interface User {
   id: string;
   userName: string;
@@ -7,7 +9,7 @@ interface User {
 
 const users: User[] = [
   {
-    id: "1",
+    id: uuidv4(),
     userName: "John D",
     age: 22,
     hobbies: [],
@@ -19,5 +21,8 @@ export const userRepository = {
     return new Promise((resolve, reject) => {
       resolve(users);
     });
+  },
+  getOne(id: string) {
+    return users.find((user) => user.id === id);
   },
 };
