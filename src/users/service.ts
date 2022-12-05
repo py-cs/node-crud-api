@@ -1,4 +1,5 @@
 import { userRepository } from "./repository";
+import { User } from "./types";
 
 export const userService = {
   async getAll() {
@@ -7,7 +8,12 @@ export const userService = {
   },
 
   async getOne(id: string) {
-    const users = await userRepository.getOne(id);
-    return users;
+    const user = await userRepository.getOne(id);
+    return user;
+  },
+
+  async create(user: User) {
+    const newUser = await userRepository.create(user);
+    return newUser;
   },
 };

@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { userService } from "./service";
-import { getBody, getId } from "./utils";
+import { getBody, getId, isUser } from "./utils";
 import { validate } from "uuid";
 
 export const userController = {
@@ -14,6 +14,7 @@ export const userController = {
       console.log(error);
     }
   },
+
   async getOne(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
     const id = getId(req.url);
 
@@ -32,9 +33,18 @@ export const userController = {
     res.statusCode = 200;
     res.end(JSON.stringify(user));
   },
+
   async create(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
     const body = await getBody(req);
-    console.log(body);
+
+    if (isUser(body)) {
+      const newUser = await userService.create(body);
+      res.statusCode = 201;
+      res.end(JSON.stringify(newUser));
+    } else {
+      res.statusCode = 400;
+      res.end("Invalid user data");
+    }
   },
   async update(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {},
   async delete(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {},

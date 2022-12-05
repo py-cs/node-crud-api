@@ -1,4 +1,5 @@
 import { IncomingMessage } from "http";
+import { User } from "./types";
 
 export const getId = (url: string) => {
   const groups = url.match(/\/api\/users\/([\w-]+)/);
@@ -17,4 +18,13 @@ export const getBody = async (req: IncomingMessage): Promise<{}> => {
         resolve(body ? JSON.parse(body) : {});
       });
   });
+};
+
+export const isUser = (obj: Partial<User>): obj is User => {
+  return (
+    typeof obj.userName === "string" &&
+    typeof obj.age === "number" &&
+    Array.isArray(obj.hobbies) &&
+    obj.hobbies.every((h) => typeof h === "string")
+  );
 };

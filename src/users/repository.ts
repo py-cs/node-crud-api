@@ -1,11 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-
-interface User {
-  id: string;
-  userName: string;
-  age: number;
-  hobbies: string[];
-}
+import { User } from "./types";
 
 const users: User[] = [
   {
@@ -24,5 +18,10 @@ export const userRepository = {
   },
   getOne(id: string) {
     return users.find((user) => user.id === id);
+  },
+  create(user: User) {
+    const newUser = { ...user, id: uuidv4() };
+    users.push(newUser);
+    return newUser;
   },
 };
