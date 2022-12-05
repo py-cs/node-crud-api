@@ -52,7 +52,7 @@ export const userController = {
 
     if (!validate(id)) {
       res.statusCode = 400;
-      res.end("userId is not valid");
+      res.end("Indalid userId");
     }
 
     const isDeleted = await userService.delete(id);
@@ -65,5 +65,27 @@ export const userController = {
       res.end(`User with id ${id} not found`);
     }
   },
-  async update(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {},
+
+  async update(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
+    const id = getId(req.url);
+    const body = await getBody(req);
+
+    if (!validate(id)) {
+      res.statusCode = 400;
+      res.end("Indalid userId");
+    } else if (isUser(body)) {
+      const updatedUser = await userService.update(id, body);
+
+      if (!updatedUser) {
+        res.statusCode = 404;
+        res.end(`User with id ${id} not found`);
+      } else {
+        res.statusCode = 200;
+        res.end(JSON.stringify(updatedUser));
+      }
+    } else {
+      res.statusCode = 400;
+      res.end("Invalid user data");
+    }
+  },
 };

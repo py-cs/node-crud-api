@@ -20,4 +20,8 @@ export const userService = {
   async delete(id: string) {
     return await userRepository.delete(id);
   },
+
+  async update(id: string, user: User) {
+    return await userRepository.update(id, user);
+  },
 };

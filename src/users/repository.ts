@@ -29,11 +29,24 @@ export const userRepository = {
 
   delete(id: string) {
     const candidate = users.find((user) => user.id === id);
-    console.log(candidate);
+
     if (!candidate) {
       return false;
     }
+
     users.splice(users.indexOf(candidate), 1);
     return true;
+  },
+
+  update(id: string, user: User) {
+    const candidate = users.find((user) => user.id === id);
+    if (!candidate) {
+      return false;
+    }
+
+    const updatedUser = { ...user, id };
+
+    users.splice(users.indexOf(candidate), 1, updatedUser);
+    return updatedUser;
   },
 };
