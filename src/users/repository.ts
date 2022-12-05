@@ -2,14 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import ApiError from "../apiError/apiError";
 import { User } from "./types";
 
-const users: User[] = [
-  {
-    id: "7315942f-4220-4608-b21e-fd62b8699999",
-    userName: "John D",
-    age: 22,
-    hobbies: [],
-  },
-];
+export const users: User[] = [];
 
 export const userRepository = {
   async getAll(): Promise<User[]> {

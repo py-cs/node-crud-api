@@ -5,7 +5,7 @@ import ApiError from "./apiError/apiError";
 const API_URL = /^\/api\/users\/?/;
 const API_URL_WITH_ID = /^\/api\/users\/[^\/]*$/;
 
-const server = createServer(async (req, res) => {
+export const server = createServer(async (req, res) => {
   res.setHeader("Content-type", "application/json");
 
   try {

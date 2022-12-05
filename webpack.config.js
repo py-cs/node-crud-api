@@ -1,13 +1,10 @@
-import path from "path";
-import { fileURLToPath } from "url";
+const path = require("path");
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const config = {
+module.exports = {
   entry: "./src/index.ts",
   target: "node",
   output: {
-    filename: "bundle.cjs",
+    filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
   },
   module: {
@@ -23,5 +20,3 @@ const config = {
     extensions: [".ts", ".js"],
   },
 };
-
-export default config;
