@@ -2,6 +2,7 @@ import { createServer } from "http";
 import { userController } from "./users/controller";
 import ApiError from "./apiError/apiError";
 import { ErrorMessages } from "./apiError/constants";
+import "dotenv/config";
 
 const API_URL = /^\/api\/users\/?/;
 const API_URL_WITH_ID = /^\/api\/users\/[^\/]*$/;
@@ -47,7 +48,7 @@ export const server = createServer(async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 server.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
