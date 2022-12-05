@@ -3,25 +3,22 @@ import { User } from "./types";
 
 export const userService = {
   async getAll() {
-    const users = await userRepository.getAll();
-    return users;
+    return userRepository.getAll();
   },
 
   async getOne(id: string) {
-    const user = await userRepository.getOne(id);
-    return user;
+    return userRepository.getOne(id);
   },
 
   async create(user: User) {
-    const newUser = await userRepository.create(user);
-    return newUser;
+    return userRepository.create(user);
   },
 
   async delete(id: string) {
-    return await userRepository.delete(id);
+    return userRepository.delete(id);
   },
 
   async update(id: string, user: User) {
-    return await userRepository.update(id, user);
+    return userRepository.update(id, user);
   },
 };

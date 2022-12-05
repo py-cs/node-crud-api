@@ -1,35 +1,48 @@
-import { createServer, IncomingMessage } from "http";
+import { createServer } from "http";
 import { userController } from "./users/controller";
+import ApiError from "./apiError/apiError";
 
-const server = createServer((req, res) => {
-  const { url, method } = req;
-  console.log(url, method);
-  if (!url.match(/\/api\/users/)) {
-    res.statusCode = 404;
-    res.end("Not  implemented");
-  } else {
-    switch (method) {
-      case "GET":
-        if (url.match(/\/api\/users\/([\w-]+)/)) {
-          userController.getOne(req, res);
-        } else {
-          userController.getAll(req, res);
-        }
-        break;
-      case "POST":
-        userController.create(req, res);
-        break;
-      case "PUT":
-        userController.update(req, res);
-        break;
-      case "DELETE":
-        userController.delete(req, res);
-        break;
-      default:
-        res.statusCode = 404;
-        res.end("Not  implemented");
-        break;
+const API_URL = /^\/api\/users\/?/;
+const API_URL_WITH_ID = /^\/api\/users\/[^\/]*$/;
+
+const server = createServer(async (req, res) => {
+  res.setHeader("Content-type", "application/json");
+
+  try {
+    const { url, method } = req;
+
+    if (!url.match(API_URL)) {
+      throw ApiError.notFound(`Endpoint is not available (${url})`);
+    } else {
+      switch (method) {
+        case "GET":
+          if (url.match(API_URL_WITH_ID)) {
+            await userController.getOne(req, res);
+          } else {
+            await userController.getAll(req, res);
+          }
+          break;
+        case "POST":
+          await userController.create(req, res);
+          break;
+        case "PUT":
+          await userController.update(req, res);
+          break;
+        case "DELETE":
+          await userController.delete(req, res);
+          break;
+        default:
+          throw ApiError.notFound(`${method} method is not supported`);
+      }
     }
+  } catch (error) {
+    if (!(error instanceof ApiError)) {
+      error = ApiError.internal();
+    }
+
+    const { status, message } = error;
+    res.statusCode = status;
+    res.end(JSON.stringify({ message }));
   }
 });
 

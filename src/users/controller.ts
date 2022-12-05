@@ -2,68 +2,53 @@ import { IncomingMessage, ServerResponse } from "http";
 import { userService } from "./service";
 import { getBody, getId, isUser } from "./utils";
 import { validate } from "uuid";
+import { User } from "./types";
+import ApiError from "../apiError/apiError";
+
+enum HTTPCodes {
+  OK = 200,
+  CREATED = 201,
+  NO_CONTENT = 204,
+  BAD_REQUEST = 400,
+  NOT_FOUND = 403,
+}
 
 export const userController = {
   async getAll(_: IncomingMessage, res: ServerResponse<IncomingMessage>) {
-    try {
-      const users = await userService.getAll();
-      res.statusCode = 200;
-      res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(users));
-    } catch (error: unknown) {
-      console.log(error);
-    }
+    const users = await userService.getAll();
+    sendResponse<User[]>(res, users);
   },
 
   async getOne(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
     const id = getId(req.url);
 
     if (!validate(id)) {
-      res.statusCode = 400;
-      res.end("userId is not valid");
+      throw ApiError.badRequest("Invalid user id");
     }
 
     const user = await userService.getOne(id);
-
-    if (!user) {
-      res.statusCode = 404;
-      res.end(`User with id ${id} not found`);
-    }
-
-    res.statusCode = 200;
-    res.end(JSON.stringify(user));
+    sendResponse(res, user);
   },
 
   async create(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
     const body = await getBody(req);
 
-    if (isUser(body)) {
-      const newUser = await userService.create(body);
-      res.statusCode = 201;
-      res.end(JSON.stringify(newUser));
-    } else {
-      res.statusCode = 400;
-      res.end("Invalid user data");
+    if (!isUser(body)) {
+      throw ApiError.badRequest("Invalid user data");
     }
+    const newUser = await userService.create(body);
+    sendResponse(res, newUser, HTTPCodes.CREATED);
   },
 
   async delete(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
     const id = getId(req.url);
 
     if (!validate(id)) {
-      res.statusCode = 400;
-      res.end("Indalid userId");
+      throw ApiError.badRequest("Invalid user id");
     }
 
     const isDeleted = await userService.delete(id);
-
-    if (isDeleted) {
-      res.statusCode = 204;
-      res.end();
-    } else {
-      res.statusCode = 404;
-      res.end(`User with id ${id} not found`);
-    }
+    sendResponse(res, isDeleted, HTTPCodes.NO_CONTENT);
   },
 
   async update(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
@@ -71,21 +56,22 @@ export const userController = {
     const body = await getBody(req);
 
     if (!validate(id)) {
-      res.statusCode = 400;
-      res.end("Indalid userId");
-    } else if (isUser(body)) {
-      const updatedUser = await userService.update(id, body);
-
-      if (!updatedUser) {
-        res.statusCode = 404;
-        res.end(`User with id ${id} not found`);
-      } else {
-        res.statusCode = 200;
-        res.end(JSON.stringify(updatedUser));
-      }
-    } else {
-      res.statusCode = 400;
-      res.end("Invalid user data");
+      throw ApiError.badRequest("Invalid user id");
     }
+    if (!isUser(body)) {
+      throw ApiError.badRequest("Invalid user data");
+    }
+
+    const updatedUser = await userService.update(id, body);
+    sendResponse(res, updatedUser);
   },
+};
+
+const sendResponse = <T>(
+  res: ServerResponse<IncomingMessage>,
+  data: T,
+  status: HTTPCodes = HTTPCodes.OK
+) => {
+  res.statusCode = status;
+  res.end(JSON.stringify(data));
 };

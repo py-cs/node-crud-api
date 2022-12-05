@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from "uuid";
+import ApiError from "../apiError/apiError";
 import { User } from "./types";
 
 const users: User[] = [
   {
-    id: uuidv4(),
+    id: "7315942f-4220-4608-b21e-fd62b8699999",
     userName: "John D",
     age: 22,
     hobbies: [],
@@ -11,42 +12,50 @@ const users: User[] = [
 ];
 
 export const userRepository = {
-  getAll() {
-    return new Promise((resolve, reject) => {
+  async getAll(): Promise<User[]> {
+    return new Promise((resolve) => {
       resolve(users);
     });
   },
 
-  getOne(id: string) {
-    return users.find((user) => user.id === id);
+  async getOne(id: string): Promise<User> {
+    return new Promise((resolve, reject) => {
+      const user = users.find((user) => user.id === id);
+      if (user) {
+        resolve(user);
+      }
+      throw ApiError.notFound(`User with id ${id} not found`);
+    });
   },
 
-  create(user: User) {
-    const newUser = { ...user, id: uuidv4() };
-    users.push(newUser);
-    return newUser;
+  async create(user: User): Promise<User> {
+    return new Promise((resolve) => {
+      const newUser = { ...user, id: uuidv4() };
+      users.push(newUser);
+      resolve(newUser);
+    });
   },
 
-  delete(id: string) {
-    const candidate = users.find((user) => user.id === id);
-
-    if (!candidate) {
-      return false;
-    }
-
-    users.splice(users.indexOf(candidate), 1);
-    return true;
+  async delete(id: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const candidate = users.find((user) => user.id === id);
+      if (!candidate) {
+        reject(ApiError.notFound(`User with id ${id} not found`));
+      }
+      users.splice(users.indexOf(candidate), 1);
+      resolve();
+    });
   },
 
-  update(id: string, user: User) {
-    const candidate = users.find((user) => user.id === id);
-    if (!candidate) {
-      return false;
-    }
-
-    const updatedUser = { ...user, id };
-
-    users.splice(users.indexOf(candidate), 1, updatedUser);
-    return updatedUser;
+  async update(id: string, user: User): Promise<User> {
+    return new Promise((resolve, reject) => {
+      const candidate = users.find((user) => user.id === id);
+      if (!candidate) {
+        reject(ApiError.notFound(`User with id ${id} not found`));
+      }
+      const updatedUser = { ...user, id };
+      users.splice(users.indexOf(candidate), 1, updatedUser);
+      resolve(updatedUser);
+    });
   },
 };
