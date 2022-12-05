@@ -1,10 +1,4 @@
-enum ErrorCodes {
-  BAD_REQUEST = 400,
-  NOT_FOUND = 404,
-  INTERNAL = 500,
-}
-
-const INTERNAL_MESSAGE = 'Unexpected error'
+import { ErrorCodes, ErrorMessages } from "./constants";
 
 class ApiError extends Error {
   constructor(public status: number, public message: string) {
@@ -20,7 +14,7 @@ class ApiError extends Error {
   }
 
   static internal() {
-    return new ApiError(ErrorCodes.INTERNAL, INTERNAL_MESSAGE);
+    return new ApiError(ErrorCodes.INTERNAL, ErrorMessages.INTERNAL);
   }
 }
 

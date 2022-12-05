@@ -1,6 +1,7 @@
 import { createServer } from "http";
 import { userController } from "./users/controller";
 import ApiError from "./apiError/apiError";
+import { ErrorMessages } from "./apiError/constants";
 
 const API_URL = /^\/api\/users\/?/;
 const API_URL_WITH_ID = /^\/api\/users\/[^\/]*$/;
@@ -12,7 +13,7 @@ export const server = createServer(async (req, res) => {
     const { url, method } = req;
 
     if (!url.match(API_URL)) {
-      throw ApiError.notFound(`Endpoint is not available (${url})`);
+      throw ApiError.notFound(ErrorMessages.NO_ENDPOINT);
     } else {
       switch (method) {
         case "GET":
@@ -32,7 +33,7 @@ export const server = createServer(async (req, res) => {
           await userController.delete(req, res);
           break;
         default:
-          throw ApiError.notFound(`${method} method is not supported`);
+          throw ApiError.badRequest(ErrorMessages.NO_METHOD);
       }
     }
   } catch (error) {

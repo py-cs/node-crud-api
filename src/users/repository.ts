@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import ApiError from "../apiError/apiError";
+import { ErrorMessages } from "../apiError/constants";
 import { User } from "./types";
 
 export const users: User[] = [];
@@ -17,7 +18,7 @@ export const userRepository = {
       if (user) {
         resolve(user);
       }
-      throw ApiError.notFound(`User with id ${id} not found`);
+      throw ApiError.notFound(ErrorMessages.ID_NOT_FOUND);
     });
   },
 
@@ -33,7 +34,7 @@ export const userRepository = {
     return new Promise((resolve, reject) => {
       const candidate = users.find((user) => user.id === id);
       if (!candidate) {
-        reject(ApiError.notFound(`User with id ${id} not found`));
+        reject(ApiError.notFound(ErrorMessages.ID_NOT_FOUND));
       }
       users.splice(users.indexOf(candidate), 1);
       resolve();
@@ -44,7 +45,7 @@ export const userRepository = {
     return new Promise((resolve, reject) => {
       const candidate = users.find((user) => user.id === id);
       if (!candidate) {
-        reject(ApiError.notFound(`User with id ${id} not found`));
+        reject(ApiError.notFound(ErrorMessages.ID_NOT_FOUND));
       }
       const updatedUser = { ...user, id };
       users.splice(users.indexOf(candidate), 1, updatedUser);

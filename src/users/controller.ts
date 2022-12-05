@@ -4,13 +4,14 @@ import { getBody, getId, isUser } from "./utils";
 import { validate } from "uuid";
 import { User } from "./types";
 import ApiError from "../apiError/apiError";
+import { ErrorMessages } from "../apiError/constants";
 
-enum HTTPCodes {
+export enum HTTPCodes {
   OK = 200,
   CREATED = 201,
   NO_CONTENT = 204,
   BAD_REQUEST = 400,
-  NOT_FOUND = 403,
+  NOT_FOUND = 404,
 }
 
 export const userController = {
@@ -23,7 +24,7 @@ export const userController = {
     const id = getId(req.url);
 
     if (!validate(id)) {
-      throw ApiError.badRequest("Invalid user id");
+      throw ApiError.badRequest(ErrorMessages.INVALID_ID);
     }
 
     const user = await userService.getOne(id);
@@ -34,7 +35,7 @@ export const userController = {
     const body = await getBody(req);
 
     if (!isUser(body)) {
-      throw ApiError.badRequest("Invalid user data");
+      throw ApiError.badRequest(ErrorMessages.INVALID_DATA);
     }
     const newUser = await userService.create(body);
     sendResponse(res, newUser, HTTPCodes.CREATED);
@@ -44,7 +45,7 @@ export const userController = {
     const id = getId(req.url);
 
     if (!validate(id)) {
-      throw ApiError.badRequest("Invalid user id");
+      throw ApiError.badRequest(ErrorMessages.INVALID_ID);
     }
 
     const isDeleted = await userService.delete(id);
@@ -56,10 +57,10 @@ export const userController = {
     const body = await getBody(req);
 
     if (!validate(id)) {
-      throw ApiError.badRequest("Invalid user id");
+      throw ApiError.badRequest(ErrorMessages.INVALID_ID);
     }
     if (!isUser(body)) {
-      throw ApiError.badRequest("Invalid user data");
+      throw ApiError.badRequest(ErrorMessages.INVALID_DATA);
     }
 
     const updatedUser = await userService.update(id, body);
