@@ -16,12 +16,24 @@ export const userRepository = {
       resolve(users);
     });
   },
+
   getOne(id: string) {
     return users.find((user) => user.id === id);
   },
+
   create(user: User) {
     const newUser = { ...user, id: uuidv4() };
     users.push(newUser);
     return newUser;
+  },
+
+  delete(id: string) {
+    const candidate = users.find((user) => user.id === id);
+    console.log(candidate);
+    if (!candidate) {
+      return false;
+    }
+    users.splice(users.indexOf(candidate), 1);
+    return true;
   },
 };

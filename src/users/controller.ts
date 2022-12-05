@@ -46,6 +46,24 @@ export const userController = {
       res.end("Invalid user data");
     }
   },
+
+  async delete(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
+    const id = getId(req.url);
+
+    if (!validate(id)) {
+      res.statusCode = 400;
+      res.end("userId is not valid");
+    }
+
+    const isDeleted = await userService.delete(id);
+
+    if (isDeleted) {
+      res.statusCode = 204;
+      res.end();
+    } else {
+      res.statusCode = 404;
+      res.end(`User with id ${id} not found`);
+    }
+  },
   async update(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {},
-  async delete(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {},
 };
