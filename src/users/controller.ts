@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from "http";
 import { userService } from "./service";
 import { getBody, getId } from "./utils";
 
-export enum HTTPCodes {
+export const enum HTTPCodes {
   OK = 200,
   CREATED = 201,
   NO_CONTENT = 204,
@@ -39,8 +39,8 @@ export const userController = {
 
   async delete(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
     const id = getId(req.url);
-    const isDeleted = await userService.delete(id);
-    sendResponse(res, isDeleted, HTTPCodes.NO_CONTENT);
+    const deleted = await userService.delete(id);
+    sendResponse(res, deleted, HTTPCodes.NO_CONTENT);
   },
 
   async update(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {

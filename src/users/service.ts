@@ -1,8 +1,8 @@
 import { validate } from "uuid";
-import ApiError from "../apiError/apiError";
 import { userRepository } from "./repository";
 import { ErrorMessages } from "../apiError/constants";
 import { isUser } from "./utils";
+import ApiError from "../apiError/apiError";
 
 export const userService = {
   async getAll() {

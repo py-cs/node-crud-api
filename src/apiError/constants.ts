@@ -1,4 +1,4 @@
-export enum ErrorCodes {
+export const enum ErrorCodes {
   BAD_REQUEST = 400,
   NOT_FOUND = 404,
   INTERNAL = 500,

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import ApiError from "../apiError/apiError";
 import { ErrorMessages } from "../apiError/constants";
 import { User } from "./types";
+import ApiError from "../apiError/apiError";
 
 export const users: User[] = [];
 
