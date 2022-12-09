@@ -10,7 +10,7 @@ import {
 import ApiError from "../apiError/apiError";
 
 export class UserSharedRepository implements IUserRepository {
-  constructor(private users: User[]) {}
+  constructor() {}
 
   async getAll(): Promise<User[]> {
     return new Promise((resolve, reject) => {

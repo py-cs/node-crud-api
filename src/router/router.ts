@@ -8,14 +8,16 @@ import { UserSharedRepository } from "../sharedRepository/sharedRepository";
 import { User } from "../users/types";
 import { UserRepository } from "../users/repository";
 import { UserService } from "../users/service";
+import { getProcessStatus } from "../users/utils";
 
-export const router = () => {
+export const router = (processPort: number) => {
   const userModel: User[] = [];
   const userRepository = cluster.isWorker
-    ? new UserSharedRepository(userModel)
+    ? new UserSharedRepository()
     : new UserRepository(userModel);
   const userService = new UserService(userRepository);
   const userController = new UserController(userService);
+  const processStatus = getProcessStatus();
 
   return async (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
     res.setHeader("Content-Type", "application/json");
@@ -23,7 +25,7 @@ export const router = () => {
     try {
       const { url, method } = req;
       console.log(
-        `Executing request: ${method} ${url} in worker ${process.pid} on port ${process.env.port}`
+        `Executing request: ${method} ${url} --- ${processStatus} #${process.pid} on port ${processPort}`
       );
 
       if (!url.match(API_URL)) {

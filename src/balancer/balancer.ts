@@ -14,11 +14,13 @@ export const balancer = (port: number) => {
     .fill(null)
     .map((_, index) => {
       const workerPort = port + index + 1;
+
       const worker = cluster.fork({ workerPort });
+
       worker.on("message", async (message: Message) => {
-        console.log(message);
         const repoMethod = userRepository[message.action];
         const args = "arguments" in message ? message.arguments : [];
+
         repoMethod
           .apply(userRepository, args)
           .then((data: ReturnType<typeof repoMethod>) => worker.send({ data }))
@@ -26,6 +28,7 @@ export const balancer = (port: number) => {
             worker.send({ status: error.status, message: error.message });
           });
       });
+
       return workerPort;
     });
 

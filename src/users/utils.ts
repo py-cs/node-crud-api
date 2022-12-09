@@ -1,3 +1,4 @@
+import cluster from "cluster";
 import { IncomingMessage } from "http";
 import { User } from "./types";
 
@@ -28,3 +29,10 @@ export const isUser = (obj: Partial<User>): obj is User => {
     obj.hobbies.every((h) => typeof h === "string")
   );
 };
+
+export const getProcessStatus = () =>
+  process.env.CRUD_API_MODE === "cluster"
+    ? cluster.isPrimary
+      ? "Primary"
+      : "Worker"
+    : "Server";
