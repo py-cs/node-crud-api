@@ -1,34 +1,36 @@
 import { validate } from "uuid";
-import { userRepository } from "./repository";
 import { ErrorMessages } from "../apiError/constants";
 import { isUser } from "./utils";
 import ApiError from "../apiError/apiError";
+import { IUserRepository, IUserService } from "./types";
 
-export const userService = {
+export class UserService implements IUserService {
+  constructor(private userRepository: IUserRepository) {}
+
   async getAll() {
-    return userRepository.getAll();
-  },
+    return this.userRepository.getAll();
+  }
 
   async getOne(id: string) {
     if (!validate(id)) {
       throw ApiError.badRequest(ErrorMessages.INVALID_ID);
     }
-    return userRepository.getOne(id);
-  },
+    return this.userRepository.getOne(id);
+  }
 
   async create(user: unknown) {
     if (!isUser(user)) {
       throw ApiError.badRequest(ErrorMessages.INVALID_DATA);
     }
-    return userRepository.create(user);
-  },
+    return this.userRepository.create(user);
+  }
 
   async delete(id: string) {
     if (!validate(id)) {
       throw ApiError.badRequest(ErrorMessages.INVALID_ID);
     }
-    return userRepository.delete(id);
-  },
+    return this.userRepository.delete(id);
+  }
 
   async update(id: string, user: unknown) {
     if (!validate(id)) {
@@ -37,6 +39,6 @@ export const userService = {
     if (!isUser(user)) {
       throw ApiError.badRequest(ErrorMessages.INVALID_DATA);
     }
-    return userRepository.update(id, user);
-  },
-};
+    return this.userRepository.update(id, user);
+  }
+}
