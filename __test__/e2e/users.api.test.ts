@@ -3,8 +3,7 @@ import request from "supertest";
 import { v4 as uuidv4 } from "uuid";
 import { server } from "../../src";
 import { ErrorMessages } from "../../src/apiError/constants";
-import { HTTPCodes } from "../../src/users/controller";
-import { User } from "../../src/users/types";
+import { HTTPCodes, User } from "../../src/users/types";
 
 describe("Users API", () => {
   afterAll((done) => {
