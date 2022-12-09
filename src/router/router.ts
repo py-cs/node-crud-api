@@ -20,19 +20,19 @@ export const router = async (
     switch (method) {
       case HTTPMethods.GET:
         if (url.match(API_URL_WITH_ID)) {
-          userController.getOne(req, res);
+          await userController.getOne(req, res);
         } else {
-          userController.getAll(req, res);
+          await userController.getAll(req, res);
         }
         break;
       case HTTPMethods.POST:
-        userController.create(req, res);
+        await userController.create(req, res);
         break;
       case HTTPMethods.PUT:
-        userController.update(req, res);
+        await userController.update(req, res);
         break;
       case HTTPMethods.DELETE:
-        userController.delete(req, res);
+        await userController.delete(req, res);
         break;
       default:
         throw ApiError.badRequest(ErrorMessages.NO_METHOD);
