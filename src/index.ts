@@ -1,11 +1,20 @@
+import cluster from "cluster";
 import { createServer } from "http";
 import { router } from "./router/router";
+import { balancer } from "./balancer/balancer";
 import "dotenv/config";
 
-const PORT = process.env.PORT || 4000;
+const { CRUD_API_MODE } = process.env;
+const PORT = Number(process.env.PORT);
 
-export const server = createServer(router);
+const isBalancer = CRUD_API_MODE === "cluster" && cluster.isPrimary;
+const processPort = Number(cluster.isPrimary ? PORT : process.env.workerPort);
+const processName = cluster.isPrimary ? "Primary" : "Worker";
 
-server.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+export const server = createServer(isBalancer ? balancer(processPort) : router);
+
+server.listen(processPort, () => {
+  console.log(
+    `${processName} #${process.pid} is running on port ${processPort}`
+  );
 });

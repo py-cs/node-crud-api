@@ -12,6 +12,9 @@ export const router = async (
 
   try {
     const { url, method } = req;
+    console.log(
+      `Executing request: ${method} ${url} in worker ${process.pid} on port ${process.env.port}`
+    );
 
     if (!url.match(API_URL)) {
       throw ApiError.notFound(ErrorMessages.NO_ENDPOINT);

@@ -4,8 +4,9 @@
   "description": "",
   "main": "./src/index.js",
   "scripts": {
-    "start:dev": "cross-env NODE_ENV=development nodemon",
+    "start:dev": "cross-env NODE_ENV=development NODE_NO_WARNINGS=1 nodemon",
     "start:prod": "cross-env NODE_ENV=production npm run build && node ./dist/bundle.js",
+    "start:multi": "cross-env CRUD_API_MODE=cluster NODE_NO_WARNINGS=1 nodemon",
     "build": "webpack",
     "test": "jest"
   },
