@@ -1,13 +1,13 @@
 import os from "os";
 import cluster from "cluster";
 import { IncomingMessage, request, ServerResponse } from "http";
-import { HOST } from "./constants";
 import { UserRepository } from "../users/repository";
 import { Message } from "../sharedRepository/messages";
 import ApiError from "../apiError/apiError";
+import { CONTENT_TYPE, HOST } from "./constants";
 
 export const balancer = (port: number) => {
-  const coresCount = os.cpus().length / 2;
+  const coresCount = os.cpus().length;
   const userRepository = new UserRepository([]);
 
   const workerPorts = Array(coresCount)
@@ -18,12 +18,13 @@ export const balancer = (port: number) => {
       const worker = cluster.fork({ workerPort });
 
       worker.on("message", async (message: Message) => {
-        const repoMethod = userRepository[message.action];
-        const args = "arguments" in message ? message.arguments : [];
-
-        repoMethod
+        const userRepositoryMethod = userRepository[message.action];
+        const args = "args" in message ? message.args : [];
+        userRepositoryMethod
           .apply(userRepository, args)
-          .then((data: ReturnType<typeof repoMethod>) => worker.send({ data }))
+          .then((data: Awaited<ReturnType<typeof userRepositoryMethod>>) => {
+            worker.send({ data });
+          })
           .catch((error: ApiError) => {
             worker.send({ status: error.status, message: error.message });
           });
@@ -46,7 +47,7 @@ export const balancer = (port: number) => {
       },
       (response) => {
         res.statusCode = response.statusCode;
-        res.setHeader("Content-Type", "application/json");
+        res.setHeader(CONTENT_TYPE, response.headers[CONTENT_TYPE]);
         response.pipe(res);
       }
     );

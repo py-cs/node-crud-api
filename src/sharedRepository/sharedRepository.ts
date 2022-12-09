@@ -1,4 +1,5 @@
-import { IUserRepository, User } from "../users/types";
+import ApiError from "../apiError/apiError";
+import { Deleted, IUserRepository, User } from "../users/types";
 import {
   createMessage,
   deleteMessage,
@@ -7,7 +8,6 @@ import {
   MessageResponse,
   updateMessage,
 } from "./messages";
-import ApiError from "../apiError/apiError";
 
 export class UserSharedRepository implements IUserRepository {
   constructor() {}
@@ -15,65 +15,48 @@ export class UserSharedRepository implements IUserRepository {
   async getAll(): Promise<User[]> {
     return new Promise((resolve, reject) => {
       process.send(getAllMessage());
-      process.once("message", (response: MessageResponse<User[]>) => {
-        if (response.data) {
-          resolve(response.data);
-        } else {
-          reject(ApiError.notFound(response.message));
-        }
-      });
+      process.once("message", this.handleResponse<User[]>(resolve, reject));
     });
   }
 
   async getOne(id: string): Promise<User> {
     return new Promise((resolve, reject) => {
       process.send(getOneMessage(id));
-      process.once("message", (response: MessageResponse<User>) => {
-        if (response.data) {
-          resolve(response.data);
-        } else {
-          reject(ApiError.notFound(response.message));
-        }
-      });
+      process.once("message", this.handleResponse<User>(resolve, reject));
     });
   }
 
   async create(user: User): Promise<User> {
     return new Promise((resolve, reject) => {
       process.send(createMessage(user));
-      process.once("message", (response: MessageResponse<User>) => {
-        if (response.data) {
-          resolve(response.data);
-        } else {
-          reject(ApiError.notFound(response.message));
-        }
-      });
+      process.once("message", this.handleResponse<User>(resolve, reject));
     });
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<Deleted> {
     return new Promise((resolve, reject) => {
       process.send(deleteMessage(id));
-      process.once("message", (response: MessageResponse<string>) => {
-        if (response.data === "") {
-          resolve();
-        } else {
-          reject(ApiError.notFound(response.message));
-        }
-      });
+      process.once("message", this.handleResponse<Deleted>(resolve, reject));
     });
   }
 
   async update(id: string, user: User): Promise<User> {
     return new Promise((resolve, reject) => {
       process.send(updateMessage(id, user));
-      process.once("message", (response: MessageResponse<User>) => {
-        if (response.data) {
-          resolve(response.data);
-        } else {
-          reject(ApiError.notFound(response.message));
-        }
-      });
+      process.once("message", this.handleResponse<User>(resolve, reject));
     });
+  }
+
+  private handleResponse<T>(
+    resolve: (value: T | PromiseLike<T>) => void,
+    reject: (reason?: any) => void
+  ) {
+    return (response: MessageResponse<T>) => {
+      if (response.data) {
+        resolve(response.data);
+      } else {
+        reject(ApiError.notFound(response.message));
+      }
+    };
   }
 }

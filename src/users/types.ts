@@ -15,34 +15,26 @@ export interface User {
   hobbies: string[];
 }
 
+type RouteHandler = (
+  req: IncomingMessage,
+  res: ServerResponse<IncomingMessage>
+) => Promise<void>;
+
 export interface IUserController {
-  getAll: (
-    req: IncomingMessage,
-    res: ServerResponse<IncomingMessage>
-  ) => Promise<void>;
-  getOne: (
-    req: IncomingMessage,
-    res: ServerResponse<IncomingMessage>
-  ) => Promise<void>;
-  create: (
-    req: IncomingMessage,
-    res: ServerResponse<IncomingMessage>
-  ) => Promise<void>;
-  delete: (
-    req: IncomingMessage,
-    res: ServerResponse<IncomingMessage>
-  ) => Promise<void>;
-  update: (
-    req: IncomingMessage,
-    res: ServerResponse<IncomingMessage>
-  ) => Promise<void>;
+  getAll: RouteHandler;
+  getOne: RouteHandler;
+  create: RouteHandler;
+  delete: RouteHandler;
+  update: RouteHandler;
 }
+
+export type Deleted = "deleted";
 
 export interface IUserService {
   getAll: () => Promise<User[]>;
   getOne: (id: string) => Promise<User>;
   create: (user: unknown) => Promise<User>;
-  delete: (id: string) => Promise<void>;
+  delete: (id: string) => Promise<Deleted>;
   update: (id: string, user: unknown) => Promise<User>;
 }
 
@@ -50,6 +42,6 @@ export interface IUserRepository {
   getAll: () => Promise<User[]>;
   getOne: (id: string) => Promise<User>;
   create: (user: User) => Promise<User>;
-  delete: (id: string) => Promise<void>;
+  delete: (id: string) => Promise<Deleted>;
   update: (id: string, user: User) => Promise<User>;
 }

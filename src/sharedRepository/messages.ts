@@ -15,25 +15,25 @@ export type GetAllMessage = ReturnType<typeof getAllMessage>;
 
 export const getOneMessage = (id: string) => ({
   action: Actions.GET_ONE,
-  arguments: [id],
+  args: [id],
 });
 export type GetOneMessage = ReturnType<typeof getOneMessage>;
 
 export const createMessage = (user: User) => ({
   action: Actions.CREATE,
-  arguments: [user],
+  args: [user],
 });
 export type CreateMessage = ReturnType<typeof createMessage>;
 
 export const deleteMessage = (id: string) => ({
   action: Actions.DELETE,
-  arguments: [id],
+  args: [id],
 });
 export type DeleteMessage = ReturnType<typeof deleteMessage>;
 
 export const updateMessage = (id: string, user: User) => ({
   action: Actions.UPDATE,
-  arguments: [id, user],
+  args: [id, user],
 });
 export type UpdateMessage = ReturnType<typeof updateMessage>;
 

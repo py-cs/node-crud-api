@@ -1,7 +1,7 @@
 import { validate } from "uuid";
+import ApiError from "../apiError/apiError";
 import { ErrorMessages } from "../apiError/constants";
 import { isUser } from "./utils";
-import ApiError from "../apiError/apiError";
 import { IUserRepository, IUserService } from "./types";
 
 export class UserService implements IUserService {

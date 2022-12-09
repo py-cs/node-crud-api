@@ -8,8 +8,6 @@ import "dotenv/config";
 const { CRUD_API_MODE } = process.env;
 const PORT = Number(process.env.PORT);
 
-console.log(cluster.isPrimary);
-
 const isBalancer = CRUD_API_MODE === "cluster" && cluster.isPrimary;
 const processPort = Number(cluster.isPrimary ? PORT : process.env.workerPort);
 

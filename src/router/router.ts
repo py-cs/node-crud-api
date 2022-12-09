@@ -1,20 +1,18 @@
+import cluster from "cluster";
 import { IncomingMessage, ServerResponse } from "http";
+import ApiError from "../apiError/apiError";
 import { UserController } from "../users/controller";
 import { ErrorMessages } from "../apiError/constants";
-import { API_URL, API_URL_WITH_ID, HTTPMethods } from "./constants";
-import ApiError from "../apiError/apiError";
-import cluster from "cluster";
 import { UserSharedRepository } from "../sharedRepository/sharedRepository";
-import { User } from "../users/types";
 import { UserRepository } from "../users/repository";
 import { UserService } from "../users/service";
 import { getProcessStatus } from "../users/utils";
+import { API_URL, API_URL_WITH_ID, HTTPMethods } from "./constants";
 
 export const router = (processPort: number) => {
-  const userModel: User[] = [];
   const userRepository = cluster.isWorker
     ? new UserSharedRepository()
-    : new UserRepository(userModel);
+    : new UserRepository([]);
   const userService = new UserService(userRepository);
   const userController = new UserController(userService);
   const processStatus = getProcessStatus();

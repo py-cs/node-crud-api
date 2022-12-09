@@ -1,2 +1,2 @@
 export const HOST = "localhost";
-export const CONTENT_TYPE = "Content-Type";
+export const CONTENT_TYPE = "content-type";

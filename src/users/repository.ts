@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { ErrorMessages } from "../apiError/constants";
-import { IUserRepository, User } from "./types";
 import ApiError from "../apiError/apiError";
+import { Deleted, IUserRepository, User } from "./types";
 
 export class UserRepository implements IUserRepository {
   constructor(private users: User[]) {}
@@ -30,14 +30,15 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<Deleted> {
     return new Promise((resolve, reject) => {
       const candidate = this.users.find((user) => user.id === id);
-      if (!candidate) {
+      if (candidate) {
+        this.users.splice(this.users.indexOf(candidate), 1);
+        resolve("deleted");
+      } else {
         reject(ApiError.notFound(ErrorMessages.ID_NOT_FOUND));
       }
-      this.users.splice(this.users.indexOf(candidate), 1);
-      resolve();
     });
   }
 
