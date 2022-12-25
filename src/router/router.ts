@@ -8,6 +8,7 @@ import { UserRepository } from "../users/repository";
 import { UserService } from "../users/service";
 import { getProcessStatus } from "../users/utils";
 import { API_URL, API_URL_WITH_ID, HTTPMethods } from "./constants";
+import { getInvalidEndpointMessage } from "../apiError/errorMessages";
 
 export const router = (processPort: number) => {
   const userRepository = cluster.isWorker
@@ -26,8 +27,8 @@ export const router = (processPort: number) => {
         `Executing request: ${method} ${url} --- ${processStatus} #${process.pid} on port ${processPort}`
       );
 
-      if (!url.match(API_URL)) {
-        throw ApiError.notFound(ErrorMessages.NO_ENDPOINT);
+      if (!url.match(API_URL) && !url.match(API_URL_WITH_ID)) {
+        throw ApiError.notFound(getInvalidEndpointMessage(method, url));
       }
 
       switch (method) {
@@ -39,6 +40,9 @@ export const router = (processPort: number) => {
           }
           break;
         case HTTPMethods.POST:
+          if (!url.match(API_URL)) {
+            throw ApiError.notFound(getInvalidEndpointMessage(method, url));
+          }
           await userController.create(req, res);
           break;
         case HTTPMethods.PUT:

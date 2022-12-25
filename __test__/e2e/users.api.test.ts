@@ -3,6 +3,11 @@ import request from "supertest";
 import { v4 as uuidv4 } from "uuid";
 import { server } from "../../src";
 import { ErrorMessages } from "../../src/apiError/constants";
+import {
+  getInvalidEndpointMessage,
+  getIdNotFoundMessage,
+} from "../../src/apiError/errorMessages";
+import { HTTPMethods } from "../../src/router/constants";
 import { HTTPCodes, User } from "../../src/users/types";
 
 describe("Users API", () => {
@@ -88,9 +93,12 @@ describe("Users API", () => {
     const validId = uuidv4();
 
     it("should return 404 when requesting endpoint that doesn't exist", async () => {
+      const invalidEndpoint = "/api/not-exist";
       await request(server)
-        .get("/api/not-exist")
-        .expect(HTTPCodes.NOT_FOUND, { message: ErrorMessages.NO_ENDPOINT });
+        .get(invalidEndpoint)
+        .expect(HTTPCodes.NOT_FOUND, {
+          message: getInvalidEndpointMessage(HTTPMethods.GET, invalidEndpoint),
+        });
     });
 
     it("should return 404 when requesting unavailable method", async () => {
@@ -108,7 +116,9 @@ describe("Users API", () => {
     it("should return 404 when getting user by id that doesn't exist", async () => {
       await request(server)
         .get(`/api/users/${validId}`)
-        .expect(HTTPCodes.NOT_FOUND, { message: ErrorMessages.ID_NOT_FOUND });
+        .expect(HTTPCodes.NOT_FOUND, {
+          message: getIdNotFoundMessage(validId),
+        });
     });
 
     it("should return 400 when trying to delete user by invalid id", async () => {
@@ -120,7 +130,9 @@ describe("Users API", () => {
     it("should return 404 when trying to delete user that doesn't exist", async () => {
       await request(server)
         .delete(`/api/users/${validId}`)
-        .expect(HTTPCodes.NOT_FOUND, { message: ErrorMessages.ID_NOT_FOUND });
+        .expect(HTTPCodes.NOT_FOUND, {
+          message: getIdNotFoundMessage(validId),
+        });
     });
 
     it("should return 400 when trying to update user by invalid id", async () => {
@@ -138,7 +150,9 @@ describe("Users API", () => {
       await request(server)
         .put(`/api/users/${validId}`)
         .send(userData)
-        .expect(HTTPCodes.NOT_FOUND, { message: ErrorMessages.ID_NOT_FOUND });
+        .expect(HTTPCodes.NOT_FOUND, {
+          message: getIdNotFoundMessage(validId),
+        });
     });
 
     it("should return 400 when trying to create user with invalid data", async () => {

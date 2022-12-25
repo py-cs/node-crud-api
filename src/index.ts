@@ -5,10 +5,13 @@ import { balancer } from "./balancer/balancer";
 import { getProcessStatus } from "./users/utils";
 import "dotenv/config";
 
-const { CRUD_API_MODE } = process.env;
-const PORT = Number(process.env.PORT);
+const DEFAULT_API_PORT = 4000;
+const CLUSTER = "cluster";
 
-const isBalancer = CRUD_API_MODE === "cluster" && cluster.isPrimary;
+const { CRUD_API_MODE } = process.env;
+const PORT = Number(process.env.PORT || DEFAULT_API_PORT);
+
+const isBalancer = CRUD_API_MODE === CLUSTER && cluster.isPrimary;
 const processPort = Number(cluster.isPrimary ? PORT : process.env.workerPort);
 
 export const server = createServer(

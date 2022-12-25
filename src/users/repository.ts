@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { ErrorMessages } from "../apiError/constants";
 import ApiError from "../apiError/apiError";
 import { Deleted, IUserRepository, User } from "./types";
+import { getIdNotFoundMessage } from "../apiError/errorMessages";
 
 export class UserRepository implements IUserRepository {
   constructor(private users: User[]) {}
@@ -18,7 +18,7 @@ export class UserRepository implements IUserRepository {
       if (user) {
         resolve(user);
       }
-      reject(ApiError.notFound(ErrorMessages.ID_NOT_FOUND));
+      reject(ApiError.notFound(getIdNotFoundMessage(id)));
     });
   }
 
@@ -37,7 +37,7 @@ export class UserRepository implements IUserRepository {
         this.users.splice(this.users.indexOf(candidate), 1);
         resolve("deleted");
       } else {
-        reject(ApiError.notFound(ErrorMessages.ID_NOT_FOUND));
+        reject(ApiError.notFound(getIdNotFoundMessage(id)));
       }
     });
   }
@@ -46,7 +46,7 @@ export class UserRepository implements IUserRepository {
     return new Promise((resolve, reject) => {
       const candidate = this.users.find((user) => user.id === id);
       if (!candidate) {
-        reject(ApiError.notFound(ErrorMessages.ID_NOT_FOUND));
+        reject(ApiError.notFound(getIdNotFoundMessage(id)));
       }
       const updatedUser = { ...user, id };
       this.users.splice(this.users.indexOf(candidate), 1, updatedUser);
