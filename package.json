@@ -6,7 +6,8 @@
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development NODE_NO_WARNINGS=1 nodemon",
     "start:prod": "cross-env NODE_ENV=production npm run build && node ./dist/bundle.js",
-    "start:multi": "cross-env CRUD_API_MODE=cluster NODE_NO_WARNINGS=1 nodemon",
+    "start:dev:multi": "cross-env CRUD_API_MODE=cluster NODE_NO_WARNINGS=1 nodemon",
+    "start:prod:multi": "cross-env NODE_ENV=production CRUD_API_MODE=cluster npm run build && cross-env CRUD_API_MODE=cluster node ./dist/bundle.js",
     "build": "webpack",
     "test": "jest"
   },

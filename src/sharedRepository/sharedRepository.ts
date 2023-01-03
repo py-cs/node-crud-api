@@ -9,41 +9,43 @@ import {
   updateMessage,
 } from "./messages";
 
+const MESSAGE = "message";
+
 export class UserSharedRepository implements IUserRepository {
   constructor() {}
 
   async getAll(): Promise<User[]> {
     return new Promise((resolve, reject) => {
       process.send(getAllMessage());
-      process.once("message", this.handleResponse<User[]>(resolve, reject));
+      process.once(MESSAGE, this.handleResponse<User[]>(resolve, reject));
     });
   }
 
   async getOne(id: string): Promise<User> {
     return new Promise((resolve, reject) => {
       process.send(getOneMessage(id));
-      process.once("message", this.handleResponse<User>(resolve, reject));
+      process.once(MESSAGE, this.handleResponse<User>(resolve, reject));
     });
   }
 
   async create(user: User): Promise<User> {
     return new Promise((resolve, reject) => {
       process.send(createMessage(user));
-      process.once("message", this.handleResponse<User>(resolve, reject));
+      process.once(MESSAGE, this.handleResponse<User>(resolve, reject));
     });
   }
 
   async delete(id: string): Promise<Deleted> {
     return new Promise((resolve, reject) => {
       process.send(deleteMessage(id));
-      process.once("message", this.handleResponse<Deleted>(resolve, reject));
+      process.once(MESSAGE, this.handleResponse<Deleted>(resolve, reject));
     });
   }
 
   async update(id: string, user: User): Promise<User> {
     return new Promise((resolve, reject) => {
       process.send(updateMessage(id, user));
-      process.once("message", this.handleResponse<User>(resolve, reject));
+      process.once(MESSAGE, this.handleResponse<User>(resolve, reject));
     });
   }
 
