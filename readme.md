@@ -35,7 +35,7 @@ $ npm run start:dev:multi
 ```
 
 ```
-$ npm run start:dev:prod
+$ npm run start:prod:multi
 ```
 
 ```
