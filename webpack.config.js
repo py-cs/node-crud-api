@@ -1,14 +1,12 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import "webpack-dev-server";
+const path = require("path");
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const config = {
-  mode: "production",
+module.exports = {
   entry: "./src/index.ts",
-  devtool: "inline-source-map",
   target: "node",
+  output: {
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
+  },
   module: {
     rules: [
       {
@@ -21,10 +19,4 @@ const config = {
   resolve: {
     extensions: [".ts", ".js"],
   },
-  output: {
-    filename: "bundle.cjs",
-    path: path.resolve(__dirname, "dist"),
-  },
 };
-
-export default config;

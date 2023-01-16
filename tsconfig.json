@@ -1,16 +1,12 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
     "noImplicitAny": true,
-  },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "esnext"
-    }
+    "module": "CommonJS",
+    "target": "ES2020",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop" : true
   }
 }
