@@ -32,7 +32,7 @@ export const getBody = async (request: IncomingMessage): Promise<{}> => {
 
 export const isUser = (obj: Partial<User>): obj is User => {
   return (
-    typeof obj.userName === "string" &&
+    typeof obj.username === "string" &&
     typeof obj.age === "number" &&
     Array.isArray(obj.hobbies) &&
     obj.hobbies.every((h) => typeof h === "string")

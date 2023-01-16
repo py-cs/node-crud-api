@@ -22,7 +22,7 @@ describe("Users API", () => {
 
     it("should create new user", async () => {
       const testUserData: User = {
-        userName: "John",
+        username: "John",
         age: 20,
         hobbies: [],
       };
@@ -55,7 +55,7 @@ describe("Users API", () => {
 
     it("should update user", async () => {
       const updatedUserData: User = {
-        userName: "John",
+        username: "John",
         age: 20,
         hobbies: ["new hobby"],
       };
@@ -142,7 +142,7 @@ describe("Users API", () => {
 
     it("should return 404 when trying to update user that doesn't exist", async () => {
       const userData: User = {
-        userName: "John",
+        username: "John",
         age: 20,
         hobbies: [],
       };

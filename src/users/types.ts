@@ -10,7 +10,7 @@ export const enum HTTPCodes {
 
 export interface User {
   id?: string;
-  userName: string;
+  username: string;
   age: number;
   hobbies: string[];
 }
